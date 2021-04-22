@@ -28,11 +28,37 @@ import csv
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
-
 # Inicialización del Catálogo de libros
-
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # catalog es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
 # Funciones para la carga de datos
+def loadData(analyzer):
+    loadSentiment(analyzer)
+    loadContextContent(analyzer)
+    loadUsertrack(analyzer)
+    return analyzer
+def loadSentiment(catalog):
+    sfile = cf.data_dir + 'subsamples-small/sentiment_values.csv'
+    input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
+    for line in input_file:
+        model.addSentiment(catalog, line)
 
+def loadContextContent(catalog):
+    sfile = cf.data_dir + 'subsamples-small/context_content_features-small.csv'
+    input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
+    for line in input_file:
+        model.addContextContent(catalog, line)
+
+def loadUsertrack(catalog):
+    sfile = cf.data_dir + 'subsamples-small/user_track_hashtag_timestamp-small.csv'
+    input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
+    for line in input_file:
+        model.addUsertrack(catalog, line)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

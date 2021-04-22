@@ -30,17 +30,77 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 assert cf
+import sys
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
-
+sys.setrecursionlimit(999999)
 # Construccion de modelos
+def newAnalyzer():
+    """ Inicializa el analizador
+
+    Crea una lista vacia para guardar todos los crimenes
+    Se crean indices (Maps) por los siguientes criterios:
+    Retorna el analizador inicializado.
+    """
+    analyzer = {'sentiment': None,
+                'contextContent': None,
+                'usertrack': None,
+                'authors':None}
+
+    analyzer['sentiment'] = om.newMap(omaptype='BST',
+                                     comparefunction=compareNames)
+    analyzer['contextContent'] = om.newMap(omaptype='BST')
+                                      #comparefunction=compareIds)
+    analyzer['usertrack'] = om.newMap(omaptype='BST')
+                                      #comparefunction=compareIds)
+    analyzer['authors'] = om.newMap(omaptype='BST')
+                                      #comparefunction=compareIds)
+    return analyzer
 
 # Funciones para agregar informacion al catalogo
+def addSentiment(analyzer,data):
+    exists= om.contains(analyzer['sentiment'],data['hashtag'])
+    if exists:
+        entry=om.get(analyzer['sentiment'],data['hashtag'])
+        newL=me.getValue(entry)
+    else: 
+        newL=lt.newList()
+    lt.addLast(newL,data)
+    om.put(analyzer['sentiment'],data['hashtag'],newL)
+    
+def addContextContent(analyzer, data):
+    exists= om.contains(analyzer['contextContent'],data['id'])
+    if exists:
+        entry=om.get(analyzer['contextContent'],data['id'])
+        newL=me.getValue(entry)
+    else: 
+        newL=lt.newList()
+    lt.addLast(newL,data)
+    om.put(analyzer['contextContent'],data['id'],newL)
 
+    exists= om.contains(analyzer['authors'],data['artist_id'])
+    if exists:
+        entry=om.get(analyzer['authors'],data['artist_id'])
+        newL=me.getValue(entry)
+    else: 
+        newL=lt.newList()
+    lt.addLast(newL,data)
+    om.put(analyzer['authors'],data['artist_id'],newL)
+
+def addUsertrack(analyzer, data):
+    exists= om.contains(analyzer['usertrack'],data['track_id'])
+    if exists:
+        entry=om.get(analyzer['usertrack'],data['track_id'])
+        newL=me.getValue(entry)
+    else: 
+        newL=lt.newList()
+    lt.addLast(newL,data)
+    om.put(analyzer['usertrack'],data['track_id'],newL)
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -48,3 +108,25 @@ los mismos.
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+
+def compareIds(id1, id2):
+    """
+    Compara dos crimenes
+    """
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1
+def compareNames(countryname, entry):
+    """
+    Compara dos ids de videos, id es un identificador
+    y entry una pareja llave-valor
+    """
+    if countryname == entry :
+        return 0
+    elif countryname > entry:
+        return 1
+    else:
+        return -1

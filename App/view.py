@@ -25,7 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+from DISClib.ADT import orderedmap as om
 
 """
 La vista se encarga de la interacción con el usuario
@@ -35,11 +35,20 @@ operación solicitada
 """
 
 def printMenu():
+    print("\n")
+    print("*******************************************")
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Cargar la Informacion")
+    print("2- REQ. 1: Caracterizar las reproducciones ")
+    print("3- REQ. 2: Encontrar música para festejar")
+    print("4- REQ. 3:Encontrar música para estudiar")
+    print("5- REQ. 4: Estimar las reproduccionesde los géneros musicales")
+    print("6- REQ. 5: Indicar el género musical más escuchado en un tiempo") 
+    print("0- Salir")
+    print("*******************************************")
 
-catalog = None
+crimefile = 'crime-utf8.csv'
+cont = None
 
 """
 Menu principal
@@ -49,9 +58,62 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
+        cont=controller.loadData(cont)
+        print("El total de registros de eventos de escucha cargados: " + str(lt.size(om.keySet(cont['contextContent']))))
+        print("El total de artistas únicos cargados:" + str(lt.size(om.keySet(cont['authors']))))
+        print("El total de pistas de audio únicas cargadas:" + str(lt.size(om.keySet(cont['usertrack']))))
+        print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
+
+    #elif int(inputs[0]) == 2:
+
+    #elif int(inputs[0]) == 3:
+    #elif int(inputs[0]) == 4:
+   # elif int(inputs[0]) == 5:
+    #elif int(inputs[0]) == 6:
+        
+    else:
+        sys.exit(0)
+sys.exit(0)
+
+
+"""
+Menu principal
+"""
+while True:
+    printMenu()
+    inputs = input('Seleccione una opción para continuar\n>')
+
+    if int(inputs[0]) == 1:
+        print("\nInicializando....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
 
     elif int(inputs[0]) == 2:
-        pass
+        print("\nCargando información de crimenes ....")
+        controller.loadData(cont, crimefile)
+        print('Crimenes cargados: ' + str(controller.crimesSize(cont)))
+        print('Altura del arbol: ' + str(controller.indexHeight(cont)))
+        print('Elementos en el arbol: ' + str(controller.indexSize(cont)))
+        print('Menor Llave: ' + str(controller.minKey(cont)))
+        print('Mayor Llave: ' + str(controller.maxKey(cont)))
+
+    elif int(inputs[0]) == 3:
+        print("\nBuscando crimenes en un rango de fechas: ")
+        initialDate = input("Fecha Inicial (YYYY-MM-DD): ")
+        finalDate = input("Fecha Final (YYYY-MM-DD): ")
+        total = controller.getCrimesByRange(cont, initialDate, finalDate)
+        print("\nTotal de crimenes en el rango de fechas: " + str(total))
+
+    elif int(inputs[0]) == 4:
+        print("\nBuscando crimenes x grupo de ofensa en una fecha: ")
+        initialDate = input("Fecha (YYYY-MM-DD): ")
+        offensecode = input("Ofensa: ")
+        numoffenses = controller.getCrimesByRangeCode(cont, initialDate,
+                                                      offensecode)
+        print("\nTotal de ofensas tipo: " + offensecode + " en esa fecha:  " +
+              str(numoffenses))
 
     else:
         sys.exit(0)
