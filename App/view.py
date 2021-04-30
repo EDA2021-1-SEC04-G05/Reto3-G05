@@ -26,7 +26,7 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 from DISClib.ADT import orderedmap as om
-
+from DISClib.ADT import map as mp
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -61,9 +61,9 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         cont = controller.init()
         cont=controller.loadData(cont)
-        print("El total de registros de eventos de escucha cargados: " + str(lt.size(om.keySet(cont['contextContent']))))
+        print("El total de registros de eventos de escucha cargados: " + str(lt.size(mp.keySet(cont['contextContent']))))
         print("El total de artistas únicos cargados:" + str(lt.size(om.keySet(cont['authors']))))
-        print("El total de pistas de audio únicas cargadas:" + str(lt.size(om.keySet(cont['usertrack']))))
+        print("El total de pistas de audio únicas cargadas:" + str(lt.size(mp.keySet(cont['contextContent']))))
         print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
 
     elif int(inputs[0]) == 2:

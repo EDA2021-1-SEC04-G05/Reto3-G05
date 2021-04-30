@@ -86,7 +86,7 @@ def addSentiment(analyzer,data):
 def addContextContent(analyzer, data):
     exists= mp.contains(analyzer['contextContent'],data['track_id'])
     if exists:
-        entry=om.get(analyzer['contextContent'],data['track_id'])
+        entry=mp.get(analyzer['contextContent'],data['track_id'])
         newL=me.getValue(entry)
     else: 
         newL=lt.newList()
@@ -117,19 +117,21 @@ def addContextContent(analyzer, data):
 
 
 def addUsertrack(analyzer, data):
-    exists= om.contains(analyzer['contextContent'],data['track_id'])
+    exists= mp.contains(analyzer['contextContent'],data['track_id'])
     if exists:
-        entry=om.get(analyzer['contextContent'],data['track_id'])
+        entry=mp.get(analyzer['contextContent'],data['track_id'])
         newL=me.getValue(entry)
     else: 
         newL=lt.newList()
     lt.addLast(newL,data['hashtag'])
-    om.put(analyzer['contextContent'],data['track_id'],newL)
+    mp.put(analyzer['contextContent'],data['track_id'],newL)
 # Funciones para creacion de datos
 
 # Funciones de consulta
 def caracterizaReproducciones (analyzer,caracteristica,mini,maxi):
     feat=analyzer['features']
+    cara=feat[caracteristica]
+    
     
 
 # Funciones utilizadas para comparar elementos dentro de una lista
