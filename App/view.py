@@ -66,7 +66,10 @@ while True:
         print("El total de pistas de audio únicas cargadas:" + str(lt.size(om.keySet(cont['usertrack']))))
         print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
 
-    #elif int(inputs[0]) == 2:
+    elif int(inputs[0]) == 2:
+        caracteristica=input("Característica de contenido (ej.: valencia, sonoridad, etc.) a buscar:")
+        mini= int(input("El valor mínimo de la característica de contenido:"))
+        maxi=int(input("El valor máximo de la característica de contenido:"))
 
     #elif int(inputs[0]) == 3:
     #elif int(inputs[0]) == 4:

@@ -53,6 +53,7 @@ def loadContextContent(catalog):
     input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
     for line in input_file:
         model.addContextContent(catalog, line)
+    
 
 def loadUsertrack(catalog):
     sfile = cf.data_dir + 'subsamples-small/user_track_hashtag_timestamp-small.csv'

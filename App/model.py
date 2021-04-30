@@ -49,17 +49,27 @@ def newAnalyzer():
     """
     analyzer = {'sentiment': None,
                 'contextContent': None,
-                'usertrack': None,
+                'features':None,
                 'authors':None}
 
     analyzer['sentiment'] = om.newMap(omaptype='BST',
                                      comparefunction=compareNames)
-    analyzer['contextContent'] = om.newMap(omaptype='BST')
+    analyzer['contextContent'] = mp.newMap(maptype='BST')
                                       #comparefunction=compareIds)
-    analyzer['usertrack'] = om.newMap(omaptype='BST')
+    analyzer['features'] = {"instrumentalness":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "liveness":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "speechiness":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "danceability":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "valence":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "loudness":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "tempo":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "acousticness":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "energy":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "mode":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "key":om.newMap(omaptype='RBT',comparefunction=compareIds),
+                            "artist_id":om.newMap(omaptype='RBT',comparefunction=compareIds)}
                                       #comparefunction=compareIds)
-    analyzer['authors'] = om.newMap(omaptype='BST')
-                                      #comparefunction=compareIds)
+    analyzer['authors'] = om.newMap(omaptype='BST',comparefunction=compareIds)
     return analyzer
 
 # Funciones para agregar informacion al catalogo
@@ -74,14 +84,15 @@ def addSentiment(analyzer,data):
     om.put(analyzer['sentiment'],data['hashtag'],newL)
     
 def addContextContent(analyzer, data):
-    exists= om.contains(analyzer['contextContent'],data['id'])
+    exists= mp.contains(analyzer['contextContent'],data['track_id'])
     if exists:
-        entry=om.get(analyzer['contextContent'],data['id'])
+        entry=om.get(analyzer['contextContent'],data['track_id'])
         newL=me.getValue(entry)
     else: 
         newL=lt.newList()
     lt.addLast(newL,data)
-    om.put(analyzer['contextContent'],data['id'],newL)
+    
+    mp.put(analyzer['contextContent'],data['track_id'],newL)
 
     exists= om.contains(analyzer['authors'],data['artist_id'])
     if exists:
@@ -92,18 +103,34 @@ def addContextContent(analyzer, data):
     lt.addLast(newL,data)
     om.put(analyzer['authors'],data['artist_id'],newL)
 
+    features=["instrumentalness","liveness","speechiness","danceability","valence","loudness","tempo","acousticness","energy","mode","key"]
+    cara=analyzer['features']
+    for car in features:
+        exists= om.contains(cara[car],data[car])
+        if exists:
+            entry=om.get(cara[car],data[car])
+            newL=me.getValue(entry)
+        else:  
+            newL=lt.newList()
+        lt.addLast(newL,data['track_id'])
+        om.put(cara[car],data[car],newL)
+
+
 def addUsertrack(analyzer, data):
-    exists= om.contains(analyzer['usertrack'],data['track_id'])
+    exists= om.contains(analyzer['contextContent'],data['track_id'])
     if exists:
-        entry=om.get(analyzer['usertrack'],data['track_id'])
+        entry=om.get(analyzer['contextContent'],data['track_id'])
         newL=me.getValue(entry)
     else: 
         newL=lt.newList()
-    lt.addLast(newL,data)
-    om.put(analyzer['usertrack'],data['track_id'],newL)
+    lt.addLast(newL,data['hashtag'])
+    om.put(analyzer['contextContent'],data['track_id'],newL)
 # Funciones para creacion de datos
 
 # Funciones de consulta
+def caracterizaReproducciones (analyzer,caracteristica,mini,maxi):
+    feat=analyzer['features']
+    
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
