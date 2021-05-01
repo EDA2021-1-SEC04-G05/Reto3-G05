@@ -67,11 +67,21 @@ while True:
         print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
 
     elif int(inputs[0]) == 2:
-        caracteristica=input("Característica de contenido (ej.: valencia, sonoridad, etc.) a buscar:")
-        mini= int(input("El valor mínimo de la característica de contenido:"))
-        maxi=int(input("El valor máximo de la característica de contenido:"))
+        caract=input("Característica de contenido (ej.: valencia, sonoridad, etc.) a buscar:")
+        mini=str(input("El valor mínimo de la característica de contenido:"))
+        maxi=str(input("El valor máximo de la característica de contenido:"))
+        ans=controller.caracterizaReproducciones(cont,caract,mini,maxi)
+        print ("Total of reproductions: {0} | Total of unique artists: {1}".format(ans[0],ans[1]))
 
-    #elif int(inputs[0]) == 3:
+    elif int(inputs[0]) == 3:
+        minid=str(input("El valor mínimo de Danceability de contenido:"))
+        maxid=str(input("El valor máximo de Danceability de contenido:"))
+        minie=str(input("El valor mínimo de Energy de contenido:"))
+        maxie=str(input("El valor máximo de Energy de contenido:"))
+        ans=controller.musicFest(cont,minie,maxie,minid,maxid)
+        print("Total of unique tracks in events: {0}".format(ans[0]))
+        for a in ans[1]: 
+            print(a)
     #elif int(inputs[0]) == 4:
    # elif int(inputs[0]) == 5:
     #elif int(inputs[0]) == 6:

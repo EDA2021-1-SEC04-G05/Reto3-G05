@@ -54,7 +54,6 @@ def loadContextContent(catalog):
     for line in input_file:
         model.addContextContent(catalog, line)
     
-
 def loadUsertrack(catalog):
     sfile = cf.data_dir + 'subsamples-small/user_track_hashtag_timestamp-small.csv'
     input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
@@ -63,3 +62,9 @@ def loadUsertrack(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def caracterizaReproducciones (catalog,caracteristica,mini,maxi):
+    ans=model.caracterizaReproducciones(catalog,caracteristica,mini,maxi)
+    return ans 
+def musicFest(catalog,mine,maxe,mind,maxd):
+    ans=model.musicFest(catalog,mine,maxe,mind,maxd)
+    return ans
