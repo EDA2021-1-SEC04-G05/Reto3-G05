@@ -62,7 +62,7 @@ while True:
         cont = controller.init()
         cont=controller.loadData(cont)
         print("El total de registros de eventos de escucha cargados: " + str(lt.size(mp.keySet(cont['contextContent']))))
-        print("El total de artistas únicos cargados:" + str(lt.size(om.keySet(cont['authors']))))
+        #print("El total de artistas únicos cargados:" + str(lt.size(mp.keySet(cont['authors']))))
         print("El total de pistas de audio únicas cargadas:" + str(lt.size(mp.keySet(cont['contextContent']))))
         print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
 
@@ -80,10 +80,24 @@ while True:
         maxie=str(input("El valor máximo de Energy de contenido:"))
         ans=controller.musicFest(cont,minie,maxie,minid,maxid)
         print("Total of unique tracks in events: {0}".format(ans[0]))
-        for a in ans[1]: 
+        for a in ans[1]['elements']: 
             print(a)
     #elif int(inputs[0]) == 4:
-   # elif int(inputs[0]) == 5:
+    elif int(inputs[0]) == 5:
+        tipo=input("la lista de géneros musicales que se desea buscar, separado por comas:")
+        tipo=list(tipo.split(", "))
+        ans=controller.generosMusicales(cont,tipo)
+        print("Total of reproductions:"+ str(ans[0]))
+        #print(lt.size(ans[1]))
+        for a in range(0,(lt.size(ans[1]))):
+            b=lt.getElement(ans[1], a)
+            print("__________{0}__________".format(b[0]))
+            print('{0} reproductions: {1} with {2} different artists'.format(b[0],b[1],b[2]))
+            for i in range (0,10):
+                c=lt.getElement(b[3], i)
+                print()
+                print('artist {0}: {1}'.format(i+1,c))
+
     #elif int(inputs[0]) == 6:
         
     else:

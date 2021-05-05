@@ -53,12 +53,11 @@ def newAnalyzer():
     """
     analyzer = {'sentiment': None,
                 'contextContent': None,
-                'features':None,
-                'authors':None}
+                'features':None}
 
     analyzer['sentiment'] = om.newMap(omaptype='BST',
                                      comparefunction=compareNames)
-    analyzer['contextContent'] = mp.newMap(maptype='BST')
+    analyzer['contextContent'] = mp.newMap(maptype='CHAINING')
                                       #comparefunction=compareIds)
     analyzer['features'] = {"instrumentalness":om.newMap(omaptype='RBT',comparefunction=compareIds),
                             "liveness":om.newMap(omaptype='RBT',comparefunction=compareIds),
@@ -70,10 +69,7 @@ def newAnalyzer():
                             "acousticness":om.newMap(omaptype='RBT',comparefunction=compareIds),
                             "energy":om.newMap(omaptype='RBT',comparefunction=compareIds),
                             "mode":om.newMap(omaptype='RBT',comparefunction=compareIds),
-                            "key":om.newMap(omaptype='RBT',comparefunction=compareIds),
-                            "artist_id":om.newMap(omaptype='RBT',comparefunction=compareIds)}
-                                      #comparefunction=compareIds)
-    analyzer['authors'] = om.newMap(omaptype='BST',comparefunction=compareIds)
+                            "key":om.newMap(omaptype='RBT',comparefunction=compareIds)}
     return analyzer
 
 # Funciones para agregar informacion al catalogo
@@ -96,15 +92,6 @@ def addContextContent(analyzer, data):
         newL=lt.newList()
     lt.addLast(newL,data)
     mp.put(analyzer['contextContent'],data['track_id'],newL)
-
-    exists= om.contains(analyzer['authors'],data['artist_id'])
-    if exists:
-        entry=om.get(analyzer['authors'],data['artist_id'])
-        newL=me.getValue(entry)
-    else: 
-        newL=lt.newList()
-    lt.addLast(newL,data)
-    om.put(analyzer['authors'],data['artist_id'],newL)
 
     features=["instrumentalness","liveness","speechiness","danceability","valence","loudness","tempo","acousticness","energy","mode","key"]
     cara=analyzer['features']
@@ -134,7 +121,16 @@ def addUsertrack(analyzer, data):
     lt.addLast(newL,data['hashtag'])
     mp.put(analyzer['contextContent'],data['track_id'],newL)
 # Funciones para creacion de datos
-
+def oneList(li):
+    lis=lt.newList('ARRAY_LIST')
+    size=(lt.size(li))+1
+    for a in range(1,size):
+        element=lt.getElement(li, a)
+        si=(lt.size(element[0]))+1
+        for j in range (1,si):
+            ine=lt.getElement(element[0], j)
+            lt.addLast(lis, ine)
+    return lis 
 # Funciones de consulta
 def caracterizaReproducciones (analyzer,caracteristica,mini,maxi):
     feat=analyzer['features']
@@ -142,6 +138,7 @@ def caracterizaReproducciones (analyzer,caracteristica,mini,maxi):
     rango=om.values(cara,mini,maxi)
     b=lit.newIterator(rango)
     mew=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    tot=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
     size=0
     while lit.hasNext(b):
         video=lit.next(b)
@@ -155,52 +152,93 @@ def caracterizaReproducciones (analyzer,caracteristica,mini,maxi):
                 lt.addLast(mew, objeto)
     sizea=lt.size(mew)
     return(size,sizea)
+
 def musicFest(analyzer,mine,maxe,mind,maxd):
     feat=analyzer['features']
-    rangod=om.values((feat["danceability"]),mind,maxd)
-    rangoe=om.values((feat['energy']),mine,maxe)
-    dance=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
-    energy=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    rangod=om.values(feat["danceability"],mind,maxd)
+    rangoe=om.values(feat["energy"],mine,maxe)
+    da=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    en=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
     mew=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
-    b=lit.newIterator(rangod)
+    da=oneList(rangod)
+    en=oneList(rangoe)
+    b=lit.newIterator(da)
     while lit.hasNext(b):
-        video=lit.next(b)
-        e=lit.newIterator(video[0])
-        while lit.hasNext(e):
-            objeto=lit.next(e)
-            lt.addLast(dance, objeto)
-    b=lit.newIterator(rangoe)
-    while lit.hasNext(b):
-        video=lit.next(b)
-        e=lit.newIterator(video[0])
-        while lit.hasNext(e):
-            objeto=lit.next(e)
-            lt.addLast(energy, objeto)
-    b=lit.newIterator(dance)
-    while lit.hasNext(b):
-        video=lit.next(b)
-        a=lt.isPresent(energy, objeto)
-        #c=lt.isPresent(mew,objeto)
-        if a!=0: #and c==0: 
+        objeto=lit.next(b)
+        a=lt.isPresent(en, objeto)
+        c=lt.isPresent(mew,objeto)
+        if a!=0 and c==0: 
             lt.addLast(mew, objeto)
     size=lt.size(mew)
-    print(size)
     seed(1)
     num=lt.newList('ARRAY_LIST')
     for a in range (1,6):
         value=randint(1,size)
-        print(int(value))
-        print(mew)
-        track=mew[value]
-        entry=mp.get(analyzer['contextContent'],data['track_id'])
+        track=lt.getElement(mew, value)
+        entry=mp.get(analyzer['contextContent'],track)
         newL=me.getValue(entry)
-        d=newL["danceability"]
-        e=newl['energy']
+        d=(newL['first']['info']['danceability'])
+        e=(newL['first']['info']['energy'])
         trackr="track{0}:{1} with energy of {2} and danceability of {3}.".format(a,track,e,d)
         lt.addLast(num, trackr)
     return (size,num)
 
-
+def generosMusicales(analyzer,tipo):
+    feat=analyzer['features']
+    total=0
+    nom=lt.newList()
+    for gen in tipo:
+        if gen=="Reggae":
+            minn='60'
+            maxx='90'
+        elif  gen=="Down-tempo":
+            minn='70'
+            maxx='100'
+        elif gen=='Chill-out':
+            minn='90'
+            maxx='120'
+        elif gen=='Hip-hop':
+            minn='85'
+            maxx='115'
+        elif gen=='Jazz and Funk':
+            minn='120'
+            maxx='125'
+        elif gen=='Pop':
+            minn='100'
+            maxx='130'
+        elif gen=='R&B':
+            minn='60'
+            maxx='80'
+        elif gen=='Rock':
+            minn='110'
+            maxx='140'
+        elif gen=='Metal':
+            minn='100'
+            maxx='160'
+        else:
+            minn=str(input("Valor mínimo del Tempo del género musical:"))
+            maxx=str(input("Valor maximo del Tempo del género musical:"))
+        size=0
+        rango=om.values(feat["tempo"],minn,maxx)
+        b=lit.newIterator(rango)
+        mew=lt.newList()
+        while lit.hasNext(b):
+            video=lit.next(b)
+            sixe=lt.size(video[0])
+            size+=sixe
+            e=lit.newIterator(video[1])
+            si=lt.size(mew)
+            while lit.hasNext(e):
+                objeto=lit.next(e)
+                a=lt.isPresent(mew, objeto)
+                if a==0: 
+                    lt.addLast(mew, objeto) 
+            sizea=lt.size(mew)
+        ap= (gen,size,sizea,mew)
+        lt.addLast(nom, ap)
+        total+=size
+    return (total,nom)
+                
 
 
 
