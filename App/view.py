@@ -83,6 +83,15 @@ while True:
         for a in ans[1]['elements']: 
             print(a)
     #elif int(inputs[0]) == 4:
+    elif int(inputs[0]) == 4:
+        minIn=str(input("El valor mínimo de instrumentalness de contenido:"))
+        maxIn=str(input("El valor máximo de instrumentalness de contenido:"))
+        minTe=str(input("El valor mínimo de Tempo de contenido:"))
+        maxTe=str(input("El valor máximo de Tempo de contenido:"))
+        ans=controller.Req3(cont,minIn,maxIn,minTe,maxTe)
+        print("Total of unique tracks in events: {0}".format(ans[0]))
+        for a in ans[1]['elements']: 
+            print(a)
     elif int(inputs[0]) == 5:
         tipo=input("la lista de géneros musicales que se desea buscar, separado por comas:")
         tipo=list(tipo.split(", "))

@@ -68,7 +68,9 @@ def caracterizaReproducciones (catalog,caracteristica,mini,maxi):
 def musicFest(catalog,mine,maxe,mind,maxd):
     ans=model.musicFest(catalog,mine,maxe,mind,maxd)
     return ans
-
+def Req3(catalog,minIn,maxIn,minTe,maxTe):
+    ans=model.Req3(catalog,minIn,maxIn,minTe,maxTe)
+    return ans
 def generosMusicales(catalog,gen):
     ans=model.generosMusicales(catalog, gen)
     return ans

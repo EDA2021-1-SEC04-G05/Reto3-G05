@@ -183,6 +183,36 @@ def musicFest(analyzer,mine,maxe,mind,maxd):
         lt.addLast(num, trackr)
     return (size,num)
 
+def Req3(analyzer,minIn,maxIn,minTe,maxTe):
+    feat=analyzer['features']
+    rangoIn=om.values(feat["instrumentalness"],minIn,maxIn)
+    rangoTe=om.values(feat["tempo"],minTe,maxTe)
+    da=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    en=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    mew=lt.newList('ARRAY_LIST',cmpfunction=compareNames)
+    da=oneList(rangoIn)
+    en=oneList(rangoTe)
+    b=lit.newIterator(da)
+    while lit.hasNext(b):
+        objeto=lit.next(b)
+        a=lt.isPresent(en, objeto)
+        c=lt.isPresent(mew,objeto)
+        if a!=0 and c==0: 
+            lt.addLast(mew, objeto)
+    size=lt.size(mew)
+    seed(1)
+    num=lt.newList('ARRAY_LIST')
+    for a in range (1,6):
+        value=randint(1,size)
+        track=lt.getElement(mew, value)
+        entry=mp.get(analyzer['contextContent'],track)
+        newL=me.getValue(entry)
+        d=(newL['first']['info']['instrumentalness'])
+        e=(newL['first']['info']['tempo'])
+        trackr="track{0}:{1} with tempo of {2} and instrumentalness of {3}.".format(a,track,e,d)
+        lt.addLast(num, trackr)
+    return (size,num)
+
 def generosMusicales(analyzer,tipo):
     feat=analyzer['features']
     total=0
