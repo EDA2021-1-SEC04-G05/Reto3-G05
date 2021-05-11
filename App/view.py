@@ -61,41 +61,56 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         cont = controller.init()
         cont=controller.loadData(cont)
-        print("El total de registros de eventos de escucha cargados: " + str(lt.size(mp.keySet(cont['contextContent']))))
+        conta=cont[0]
+        print("Tiempo [ms]: ", f"{cont[1]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{cont[2]:.3f}")
+        print("El total de registros de eventos de escucha cargados: " + str(lt.size(mp.keySet(conta['contextContent']))))
         #print("El total de artistas únicos cargados:" + str(lt.size(mp.keySet(cont['authors']))))
-        print("El total de pistas de audio únicas cargadas:" + str(lt.size(mp.keySet(cont['contextContent']))))
+        print("El total de pistas de audio únicas cargadas:" + str(lt.size(mp.keySet(conta['contextContent']))))
         print("Mostrar los primeros 5 y últimos 5 eventos de escucha cargados con sus características de contenido y de contexto.")
 
     elif int(inputs[0]) == 2:
         caract=input("Característica de contenido (ej.: valencia, sonoridad, etc.) a buscar:")
         mini=str(input("El valor mínimo de la característica de contenido:"))
         maxi=str(input("El valor máximo de la característica de contenido:"))
-        ans=controller.caracterizaReproducciones(cont,caract,mini,maxi)
+        result=controller.caracterizaReproducciones(cont[0],caract,mini,maxi)
+        ans=result[0]
         print ("Total of reproductions: {0} | Total of unique artists: {1}".format(ans[0],ans[1]))
-
+        data=result[1]
+        print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{data[1]:.3f}")
     elif int(inputs[0]) == 3:
         minid=str(input("El valor mínimo de Danceability de contenido:"))
         maxid=str(input("El valor máximo de Danceability de contenido:"))
         minie=str(input("El valor mínimo de Energy de contenido:"))
         maxie=str(input("El valor máximo de Energy de contenido:"))
-        ans=controller.musicFest(cont,minie,maxie,minid,maxid)
+        result=controller.musicFest(cont[0],minie,maxie,minid,maxid)
+        ans=result[0]
         print("Total of unique tracks in events: {0}".format(ans[0]))
         for a in ans[1]['elements']: 
             print(a)
+        data=result[1]
+        print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{data[1]:.3f}")
     #elif int(inputs[0]) == 4:
     elif int(inputs[0]) == 4:
         minIn=str(input("El valor mínimo de instrumentalness de contenido:"))
         maxIn=str(input("El valor máximo de instrumentalness de contenido:"))
         minTe=str(input("El valor mínimo de Tempo de contenido:"))
         maxTe=str(input("El valor máximo de Tempo de contenido:"))
-        ans=controller.Req3(cont,minIn,maxIn,minTe,maxTe)
+        result=controller.Req3(cont[0],minIn,maxIn,minTe,maxTe)
+        ans=result[0]
         print("Total of unique tracks in events: {0}".format(ans[0]))
         for a in ans[1]['elements']: 
             print(a)
+        data=result[1]
+        print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{data[1]:.3f}")
     elif int(inputs[0]) == 5:
         tipo=input("la lista de géneros musicales que se desea buscar, separado por comas:")
         tipo=list(tipo.split(", "))
-        ans=controller.generosMusicales(cont,tipo)
+        result=controller.generosMusicales(cont[0],tipo)
+        ans=result[0]
         print("Total of reproductions:"+ str(ans[0]))
         #print(lt.size(ans[1]))
         for a in range(0,(lt.size(ans[1]))):
@@ -106,51 +121,12 @@ while True:
                 c=lt.getElement(b[3], i)
                 print()
                 print('artist {0}: {1}'.format(i+1,c))
+        data=result[1]
+        print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{data[1]:.3f}")
 
     #elif int(inputs[0]) == 6:
         
-    else:
-        sys.exit(0)
-sys.exit(0)
-
-
-"""
-Menu principal
-"""
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n>')
-
-    if int(inputs[0]) == 1:
-        print("\nInicializando....")
-        # cont es el controlador que se usará de acá en adelante
-        cont = controller.init()
-
-    elif int(inputs[0]) == 2:
-        print("\nCargando información de crimenes ....")
-        controller.loadData(cont, crimefile)
-        print('Crimenes cargados: ' + str(controller.crimesSize(cont)))
-        print('Altura del arbol: ' + str(controller.indexHeight(cont)))
-        print('Elementos en el arbol: ' + str(controller.indexSize(cont)))
-        print('Menor Llave: ' + str(controller.minKey(cont)))
-        print('Mayor Llave: ' + str(controller.maxKey(cont)))
-
-    elif int(inputs[0]) == 3:
-        print("\nBuscando crimenes en un rango de fechas: ")
-        initialDate = input("Fecha Inicial (YYYY-MM-DD): ")
-        finalDate = input("Fecha Final (YYYY-MM-DD): ")
-        total = controller.getCrimesByRange(cont, initialDate, finalDate)
-        print("\nTotal de crimenes en el rango de fechas: " + str(total))
-
-    elif int(inputs[0]) == 4:
-        print("\nBuscando crimenes x grupo de ofensa en una fecha: ")
-        initialDate = input("Fecha (YYYY-MM-DD): ")
-        offensecode = input("Ofensa: ")
-        numoffenses = controller.getCrimesByRangeCode(cont, initialDate,
-                                                      offensecode)
-        print("\nTotal de ofensas tipo: " + offensecode + " en esa fecha:  " +
-              str(numoffenses))
-
     else:
         sys.exit(0)
 sys.exit(0)
