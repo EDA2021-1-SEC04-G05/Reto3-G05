@@ -312,19 +312,64 @@ def Req5(analyzer, minH, maxH):
 
     rangoHoras=om.values(feat,Tmin,Tmax)
     print(rangoHoras)
-    lista=lt.newList('ARRAY_LIST')
+    
     
     mapa1 = {'reggae':[60,90],'down-tempo':[70,100],'chill-out':[90,120],'hip-hop':[85,115],'jazzandfunk':[120,150],'pop':[100,130],'r&b':[60,80],'rock':[110,140],'metal':[100,160]}
     
     b=oneList1(rangoHoras)
     reggae = lt.newList('ARRAY_LIST')
+    down = lt.newList('ARRAY_LIST')
+    chillOut = lt.newList('ARRAY_LIST')
+    hipHop = lt.newList('ARRAY_LIST')
+    jazzandfunk = lt.newList('ARRAY_LIST')
+    pop = lt.newList('ARRAY_LIST')
+    ryb = lt.newList('ARRAY_LIST')
+    rock = lt.newList('ARRAY_LIST')
+    metal = lt.newList('ARRAY_LIST')
 
     a=lit.newIterator(b)
+    mew=lt.newList()
+    
+    while lit.hasNext(a):
+        video=lit.next(a)
+        sixe=lt.size(video[0])
+        size+=sixe
+        e=lit.newIterator(video[1])
+        si=lt.size(mew)
+        while lit.hasNext(e):
+                objeto=lit.next(e)
+                a=lt.isPresent(mew, objeto)
+                if a==0: 
+                    lt.addLast(mew, objeto) 
+    
+    contador = 0
+    max = 0
+    maximom=""
+    maximo = None
 
-    for x in a:
-        for y in (y[feat3]['track_id']):
-            if mp.contains(feat3, x['track_id']):
-                lt.addLast(lista, x)
+    for i in lt.iterator(mew):
+        if i[feat2]["tempo"]  > 60 and i[feat2]["tempo"] < 90:
+            lt.addLast(reggae, i)
+        if i[feat2]["tempo"]  > 70 and i[feat2]["tempo"] < 100:
+            lt.addLast(down, i) 
+        if i[feat2]["tempo"]  > 90 and i[feat2]["tempo"] < 120:
+            lt.addLast(chillOut, i) 
+        if i[feat2]["tempo"]  > 85 and i[feat2]["tempo"] < 115:
+            lt.addLast(hipHop, i) 
+        if i[feat2]["tempo"]  > 120 and i[feat2]["tempo"] < 125:
+            lt.addLast(jazzandfunk, i) 
+        if i[feat2]["tempo"]  > 100 and i[feat2]["tempo"] < 130:
+            lt.addLast(pop, i) 
+        if i[feat2]["tempo"]  > 60 and i[feat2]["tempo"] < 80:
+            lt.addLast(ryb, i) 
+        if i[feat2]["tempo"]  > 110 and i[feat2]["tempo"] < 140:
+            lt.addLast(rock, i) 
+        if i[feat2]["tempo"]  > 100 and i[feat2]["tempo"] < 160:
+            lt.addLast(metal, i) 
+    
+        
+         
+         
                 
 
 
