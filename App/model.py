@@ -37,7 +37,7 @@ import sys
 import random
 from random import seed
 from random import randint
-
+import datetime
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -70,6 +70,7 @@ def newAnalyzer():
                             "energy":om.newMap(omaptype='RBT',comparefunction=compareIds),
                             "mode":om.newMap(omaptype='RBT',comparefunction=compareIds),
                             "key":om.newMap(omaptype='RBT',comparefunction=compareIds)}
+    analyzer['dates'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
     return analyzer
 
 # Funciones para agregar informacion al catalogo
@@ -120,6 +121,21 @@ def addUsertrack(analyzer, data):
         newL=lt.newList()
     lt.addLast(newL,data['hashtag'])
     mp.put(analyzer['contextContent'],data['track_id'],newL)
+
+def addDate(analyzer, data):
+    horaN =str(data['created_at'].split(" ")[1].split(":")[0])
+    horaM =str(data['created_at'].split(" ")[1].split(":")[1])
+    hora=(horaN+horaM)
+    horas=int(hora)
+    fecha = datetime.time(int(horaN[0]),int(horaN[1]))
+    exists= om.contains(analyzer['dates'],horas)
+    if exists:
+        entry=om.get(analyzer['dates'],horas)
+        newL=me.getValue(entry)
+    else:
+        newL=lt.newList()
+    lt.addLast(newL,data)
+    om.put(analyzer['dates'],horas,newL)
 # Funciones para creacion de datos
 def oneList(li):
     lis=lt.newList('ARRAY_LIST')
@@ -129,6 +145,16 @@ def oneList(li):
         si=(lt.size(element[0]))+1
         for j in range (1,si):
             ine=lt.getElement(element[0], j)
+            lt.addLast(lis, ine)
+    return lis 
+def oneList1(li):
+    lis=lt.newList('ARRAY_LIST')
+    size=(lt.size(li))+1
+    for a in range(1,size):
+        element=lt.getElement(li, a)
+        si=(lt.size(element))+1
+        for j in range (1,si):
+            ine=lt.getElement(element, j)
             lt.addLast(lis, ine)
     return lis 
 # Funciones de consulta
@@ -268,6 +294,37 @@ def generosMusicales(analyzer,tipo):
         lt.addLast(nom, ap)
         total+=size
     return (total,nom)
+def Req5(analyzer, minH, maxH):
+    analyzer=analyzer[0]
+    tiempoMin=minH.split(':')
+    f=minH.split(':')[0]
+    g=minH.split(':')[1]
+    tmin=(f+g)
+    Tmin=int(tmin)
+    tiempoMax=maxH.split(':')
+    f2=minH.split(':')[0]
+    g2=minH.split(':')[1]
+    tmax=(f2+g2)
+    Tmax=int(tmax)
+    feat=analyzer['dates']
+    feat2=analyzer['features']
+    feat3=analyzer['contextContent']
+
+    rangoHoras=om.values(feat,Tmin,Tmax)
+    print(rangoHoras)
+    lista=lt.newList('ARRAY_LIST')
+    
+    mapa1 = {'reggae':[60,90],'down-tempo':[70,100],'chill-out':[90,120],'hip-hop':[85,115],'jazzandfunk':[120,150],'pop':[100,130],'r&b':[60,80],'rock':[110,140],'metal':[100,160]}
+    
+    b=oneList1(rangoHoras)
+    reggae = lt.newList('ARRAY_LIST')
+
+    a=lit.newIterator(b)
+
+    for x in a:
+        for y in (y[feat3]['track_id']):
+            if mp.contains(feat3, x['track_id']):
+                lt.addLast(lista, x)
                 
 
 

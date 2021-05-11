@@ -125,8 +125,14 @@ while True:
         print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
         "Memoria [kB]: ", f"{data[1]:.3f}")
 
-    #elif int(inputs[0]) == 6:
-        
+    elif int(inputs[0]) == 6:
+        minH=input("La hora minima(HH;mm): ")
+        maxH=input("La hora maxima(HH;mm): ")
+        result=controller.Req5(cont,minH,maxH)
+        ans=result[0]
+        data=result[1]
+        print("Tiempo [ms]: ", f"{data[0]:.3f}", "  ||  ",
+        "Memoria [kB]: ", f"{data[1]:.3f}")
     else:
         sys.exit(0)
 sys.exit(0)

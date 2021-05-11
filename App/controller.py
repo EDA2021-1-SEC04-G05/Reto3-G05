@@ -50,6 +50,7 @@ def loadData(analyzer):
     loadSentiment(analyzer)
     loadContextContent(analyzer)
     loadUsertrack(analyzer)
+    loadDates(analyzer)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -75,6 +76,11 @@ def loadUsertrack(catalog):
     input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
     for line in input_file:
         model.addUsertrack(catalog, line)
+def loadDates(catalog):
+    sfile = cf.data_dir + 'subsamples-small/context_content_features-small.csv'
+    input_file = csv.DictReader(open(sfile, encoding='utf-8'),delimiter=",")
+    for line in input_file:
+        model.addDate(catalog, line)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -136,6 +142,23 @@ def Req3(catalog,minIn,maxIn,minTe,maxTe):
     start_time = getTime()
     start_memory = getMemory()
     ans=model.Req3(catalog,minIn,maxIn,minTe,maxTe)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    data= delta_time, delta_memory
+    return ans,data
+
+def Req5(catalog, minH, maxH):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    ans=model.Req5(catalog, minH, maxH)
     stop_memory = getMemory()
     stop_time = getTime()
     tracemalloc.stop()
